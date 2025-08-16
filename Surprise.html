@@ -336,7 +336,7 @@
               A Grand Adventure for My Special Princess
             </h1>
             <nav className="flex justify-center space-x-2 sm:space-x-4 mb-4 flex-wrap">
-              {['home', 'letters', 'Nicknames', 'gifts', 'music'].map(tab => (
+              {['home', 'letters', 'Nicknames', 'gifts'].map(tab => (
                 <button
                   key={tab}
                   className={`px-3 py-1 sm:px-4 sm:py-2 rounded-full font-semibold transition duration-300 m-1 ${
@@ -520,17 +520,6 @@
                     <div className="text-4xl sm:text-5xl md:text-6xl mb-2">🧸</div>
                     <p className="text-gray-800 text-sm sm:text-base">Gift 5: A cuddly teddy bear for hugs when I'm not there! 🥰</p>
                   </button>
-                </div>
-              </div>
-            )}
-            {activeTab === 'music' && (
-              <div className="fade-in text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-pink-600 mb-6">Your Personalized Playlist 🎶</h2>
-                <p className="text-lg sm:text-xl mb-6 text-gray-800">Toggle the music above to play a romantic tune dedicated to you! ❤️</p>
-                <div className="flex justify-center space-x-4 sm:space-x-6">
-                  <div className="text-4xl sm:text-5xl md:text-6xl heart-pulse">🎵</div>
-                  <div className="text-4xl sm:text-5xl md:text-6xl float-animation">❤️</div>
-                  <div className="text-4xl sm:text-5xl md:text-6xl heart-pulse">🎤</div>
                 </div>
               </div>
             )}
