@@ -63,16 +63,19 @@
       100% { background-position: -2000px -2000px; }
     }
     body {
-      background: linear-gradient(135deg, #ffb1b6, #ffd3e0, #e0c7ff, #b4e4ff, #ffdbac);
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="10" cy="10" r="2" fill="white" opacity="0.7"/><circle cx="50" cy="50" r="3" fill="white" opacity="0.5"/><circle cx="90" cy="90" r="2" fill="white" opacity="0.6"/></svg>');
-      background-size: 100px 100px;
-      animation: starrySky 100s linear infinite;
+      background: linear-gradient(135deg, #ff6ec4 0%, #f7971e 20%, #ffd200 40%, #fcb045 60%, #fd5c63 80%, #ffb1b6 100%);
+      background-image:
+        radial-gradient(circle at 20% 20%, #fff0f6 0%, #ffb1b6 40%, transparent 70%),
+        radial-gradient(circle at 80% 80%, #ffe3e3 0%, #ffd3e0 40%, transparent 70%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="10" cy="10" r="2" fill="white" opacity="0.7"/><circle cx="50" cy="50" r="3" fill="white" opacity="0.5"/><circle cx="90" cy="90" r="2" fill="white" opacity="0.6"/></svg>');
+      background-size: cover;
       color: #333;
     }
     .glass {
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: linear-gradient(135deg, rgba(255, 182, 193, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%);
+      backdrop-filter: blur(16px);
+      border: 2px solid #ff69b4;
+      box-shadow: 0 0 30px 10px rgba(255, 182, 193, 0.3);
     }
     .heart-trail {
       position: absolute;
@@ -90,8 +93,9 @@
       animation: noteReveal 1s ease-in forwards;
       border: 2px solid #ff69b4;
       border-radius: 20px;
-      box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+      box-shadow: 0 0 25px 8px rgba(255, 182, 193, 0.6), 0 0 8px 2px #ff69b4 inset;
       position: relative;
+      background: linear-gradient(135deg, #ffe3e3 0%, #ffb1b6 100%);
     }
     .love-note::before {
       content: '💖';
@@ -109,7 +113,8 @@
       cursor: pointer;
     }
     .calendar-day:hover {
-      background-color: #ffd1dc;
+      background-color: #ff6ec4;
+      color: #fff;
     }
     @media (max-width: 640px) {
       .glass {
@@ -117,6 +122,10 @@
       }
       h1 {
         font-size: 1.75rem;
+        background: linear-gradient(90deg, #ff6ec4, #f7971e, #ffd200, #fd5c63);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
       p {
         font-size: 0.85rem;
@@ -128,6 +137,8 @@
       nav button {
         margin: 0.25rem;
         padding: 0.5rem 1rem;
+        background: linear-gradient(90deg, #ff6ec4, #ffd200);
+        color: #fff;
       }
       .grid-cols-3 {
         grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -141,6 +152,8 @@
       button {
         padding: 0.5rem 1.5rem;
         font-size: 0.9rem;
+        background: linear-gradient(90deg, #ff6ec4, #ffd200);
+        color: #fff;
       }
     }
     @media (max-width: 768px) {
@@ -170,7 +183,7 @@
       React.useEffect(() => {
         if (playMusic) {
           if (!audioRef.current) {
-            audioRef.current = new Audio('your-music.mp3'); // Replace 'your-music.mp3' with the path to your local music file
+            audioRef.current = new Audio('Audio.mp3'); // Replace 'your-music.mp3' with the path to your local music file
             audioRef.current.loop = true;
           }
           audioRef.current.play().catch(e => console.log("Music playback failed:", e));
@@ -323,7 +336,7 @@
               A Grand Adventure for My Special Princess
             </h1>
             <nav className="flex justify-center space-x-2 sm:space-x-4 mb-4 flex-wrap">
-              {['home', 'letters', 'lovejar', 'gifts', 'music'].map(tab => (
+              {['home', 'letters', 'Nicknames', 'gifts', 'music'].map(tab => (
                 <button
                   key={tab}
                   className={`px-3 py-1 sm:px-4 sm:py-2 rounded-full font-semibold transition duration-300 m-1 ${
@@ -331,7 +344,7 @@
                   }`}
                   onClick={() => setActiveTab(tab)}
                 >
-                  {tab === 'lovejar' ? 'Love Jar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab === 'Nicknames' ? 'Love Jar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
               ))}
             </nav>
@@ -423,7 +436,7 @@
                 </div>
               </div>
             )}
-            {activeTab === 'lovejar' && (
+            {activeTab === 'Nicknames' && (
               <div className="fade-in text-center">
                 <h2 className="text-2xl sm:text-3xl font-bold text-pink-600 mb-6">Nicknames 💖</h2>
                 <p className="text-lg sm:text-xl mb-6 text-gray-800">Tap the button to reveal a loving nickname that shows how much I adore you! Keep pulling for more! 🌸</p>
@@ -561,7 +574,7 @@
   </script>
 </body>
 </html>
-
+<!-- 
 
       const loveMessages = [
         "Meri Jaan 😘",
@@ -636,3 +649,4 @@
         "Mere Dil ki Ekloti Shehzadi 😍",
         ""
       ];
+       -->
