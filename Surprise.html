@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Grand Adventure for My Special Princess</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.10/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .heart-pulse {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes particleBurst {
+      0% { transform: scale(1) translate(0, 0); opacity: 1; }
+      100% { transform: scale(0.5) translate(var(--tx), var(--ty)); opacity: 0; }
+    }
+    .particle {
+      position: absolute;
+      animation: particleBurst 2s ease-out forwards;
+    }
+    @keyframes type {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    .typing {
+      overflow: hidden;
+      white-space: nowrap;
+      animation: type 2.5s steps(40, end) forwards;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in forwards;
+    }
+    @keyframes spinJar {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .spin-jar {
+      animation: spinJar 1.5s ease-in-out forwards;
+    }
+    @keyframes starrySky {
+      0% { background-position: 0 0; }
+      100% { background-position: -2000px -2000px; }
+    }
+    body {
+      background: linear-gradient(135deg, #ffb1b6, #ffd3e0, #e0c7ff, #b4e4ff, #ffdbac);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="10" cy="10" r="2" fill="white" opacity="0.7"/><circle cx="50" cy="50" r="3" fill="white" opacity="0.5"/><circle cx="90" cy="90" r="2" fill="white" opacity="0.6"/></svg>');
+      background-size: 100px 100px;
+      animation: starrySky 100s linear infinite;
+      color: #333;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .heart-trail {
+      position: absolute;
+      font-size: 18px;
+      opacity: 0;
+      animation: fadeOut 0.8s ease-out forwards;
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .love-note {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: noteReveal 1s ease-in forwards;
+      border: 2px solid #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+      position: relative;
+    }
+    .love-note::before {
+      content: '💖';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+    }
+    @keyframes noteReveal {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .calendar-day {
+      cursor: pointer;
+    }
+    .calendar-day:hover {
+      background-color: #ffd1dc;
+    }
+    @media (max-width: 640px) {
+      .glass {
+        padding: 0.75rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+      }
+      p {
+        font-size: 0.85rem;
+      }
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      nav button {
+        margin: 0.25rem;
+        padding: 0.5rem 1rem;
+      }
+      .grid-cols-3 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+      .grid-cols-7 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .text-6xl {
+        font-size: 2.5rem;
+      }
+      button {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .max-w-5xl {
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <div id="root"></div>
+  <div id="fallback" style="display: none;" class="text-center p-4">
+    <h1 class="text-4xl font-bold text-pink-600">A Grand Adventure for My Special Princess</h1>
+    <p class="text-lg mt-4">Welcome to your special world, my love! Explore the tabs to discover surprises made just for you.</p>
+  </div>
+  <script type="text/babel">
+    function App() {
+      const [activeTab, setActiveTab] = React.useState('home');
+      const [particles, setParticles] = React.useState([]);
+      const [trail, setTrail] = React.useState([]);
+      const [loveNotes, setLoveNotes] = React.useState([]);
+      const [currentNote, setCurrentNote] = React.useState(null);
+      const [playMusic, setPlayMusic] = React.useState(false);
+      const [showFinale, setShowFinale] = React.useState(false);
+      const audioRef = React.useRef(null);
+
+      React.useEffect(() => {
+        if (playMusic) {
+          if (!audioRef.current) {
+            audioRef.current = new Audio('your-music.mp3'); // Replace 'your-music.mp3' with the path to your local music file
+            audioRef.current.loop = true;
+          }
+          audioRef.current.play().catch(e => console.log("Music playback failed:", e));
+        } else if (audioRef.current) {
+          audioRef.current.pause();
+        }
+      }, [playMusic]);
+
+      const handleMouseMove = (e) => {
+        const x = e.clientX || (e.touches && e.touches[0].clientX);
+        const y = e.clientY || (e.touches && e.touches[0].clientY);
+        if (x && y) {
+          const newTrail = [...trail, { id: Date.now(), x, y }];
+          setTrail(newTrail.slice(-10));
+          setTimeout(() => {
+            setTrail(prev => prev.filter(t => t.id !== newTrail[newTrail.length - 1].id));
+          }, 800);
+        }
+      };
+
+      const triggerConfetti = () => {
+        confetti({
+          particleCount: 250,
+          spread: 90,
+          origin: { y: 0.5 },
+          colors: ['#ff69b4', '#ff1493', '#c71585', '#ffb6c1', '#db7093', '#ffdbac'],
+        });
+      };
+
+      const triggerGrandFinale = () => {
+        setShowFinale(true);
+        confetti({
+          particleCount: 500,
+          spread: 120,
+          origin: { y: 0.5 },
+          colors: ['#ff69b4', '#ff1493', '#c71585', '#ffb6c1', '#db7093', '#ffdbac', '#e0c7ff'],
+          shapes: ['circle', 'square', 'star'],
+          ticks: 400,
+        });
+        generateParticles('❤️', 'text-pink-500'); // Default to hearts
+      };
+
+      const generateParticles = (symbol = '❤️', color = 'text-pink-500') => {
+        const newParticles = Array.from({ length: 100 }, (_, i) => {
+          const angle = Math.random() * 2 * Math.PI;
+          const distance = 200 + Math.random() * 400;
+          return {
+            id: i,
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            tx: Math.cos(angle) * distance,
+            ty: Math.sin(angle) * distance,
+            symbol,
+            color,
+            size: 18 + Math.random() * 20,
+          };
+        });
+        setParticles(newParticles);
+        setTimeout(() => setParticles([]), 2000);
+      };
+
+      const loveMessages = [
+        "Your eyes sparkle like stars, lighting up my darkest days! ✨",
+        "Every moment with you feels like a dream come true. 💭❤️",
+        "You're the sweetest melody in the symphony of my life. 🎶",
+        "Your hugs are my favorite place to be. 🤗",
+        "I fall in love with you more every single day. 😍",
+        "You're my adventure, my joy, my everything! 🌍💕",
+        "Your kindness makes the world a better place. 🌸",
+        "I can't wait to make more memories with you! 📸",
+        "You're the rainbow after my storms. 🌈",
+        "My heart beats just for you, my love! 💓"
+      ];
+
+      const revealLoveNote = () => {
+        const randomMessage = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+        setCurrentNote(randomMessage);
+      };
+
+      return (
+        <div 
+          className="min-h-screen flex flex-col items-center py-4 px-2 sm:px-4 relative"
+          onMouseMove={handleMouseMove}
+          onTouchMove={handleMouseMove}
+        >
+          <header className="w-full max-w-5xl mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 mb-4 animate-pulse">
+              A Grand Adventure for My Special Princess
+            </h1>
+            <nav className="flex justify-center space-x-2 sm:space-x-4 mb-4 flex-wrap">
+              {['home', 'letters', 'lovejar', 'gifts', 'music'].map(tab => (
+                <button
+                  key={tab}
+                  className={`px-3 py-1 sm:px-4 sm:py-2 rounded-full font-semibold transition duration-300 m-1 ${
+                    activeTab === tab ? 'bg-pink-500 text-white' : 'bg-white text-pink-500 hover:bg-pink-100'
+                  }`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab === 'lovejar' ? 'Love Jar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </nav>
+            <div className="flex justify-center items-center space-x-4 mb-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={playMusic}
+                  onChange={() => setPlayMusic(!playMusic)}
+                  className="form-checkbox h-5 w-5 text-pink-500"
+                />
+                <span className="text-white text-sm sm:text-base">Play Romantic Music</span>
+              </label>
+            </div>
+          </header>
+          <main className="w-full max-w-5xl glass rounded-2xl p-4 sm:p-6 md:p-10 shadow-2xl">
+            {activeTab === 'home' && (
+              <div className="text-center fade-in">
+                <p className="text-lg sm:text-xl md:text-2xl mb-6 text-gray-800">
+                  My precious princess, this magical world is yours! Dive into each tab for love, surprises, and joy crafted just for you. You're my forever! 💖🌈
+                </p>
+                <div className="flex justify-center space-x-4 sm:space-x-6 mb-6">
+                  <div className="text-4xl sm:text-5xl md:text-6xl heart-pulse">👑</div>
+                  <div className="text-4xl sm:text-5xl md:text-6xl float-animation">🌟</div>
+                  <div className="text-4xl sm:text-5xl md:text-6xl heart-pulse">❤️</div>
+                </div>
+                <button
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:from-pink-600 hover:to-purple-600 transition duration-300 text-base sm:text-lg font-semibold shadow-lg"
+                  onClick={() => { generateParticles(); triggerConfetti(); setTimeout(() => setActiveTab('letters'), 2000); }}
+                >
+                  Start the Magic!
+                </button>
+              </div>
+            )}
+            {activeTab === 'letters' && (
+              <div className="fade-in">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-600 mb-6 text-center">Love Letters Just for You 💌</h2>
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-r from-pink-200 to-purple-200 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      Hey, my love! Just wanted to remind you how beautiful and Amazing you are. Your smile lights up my world, and by my world I mean You My princess because you are my whole world.
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-rose-100 to-fuchsia-100 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      No matter what’s going on, you’ve always got me, and I will always be by your side in every situation!
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-pink-100 to-violet-100 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      You are my Rasmalai, So eatable and lickable👅🫣🫣
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-red-100 to-pink-200 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      Your laughter is like music to my soul, making every day brighter and happier! 😄🎶
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-purple-100 to-indigo-100 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      Every moment with you is a treasure I cherish deeply. You're my forever adventure! 🌍💕
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-pink-200 to-blue-100 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      Your strength and kindness inspire me to be a better person every day. I’m so lucky! 🌟
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-fuchsia-100 to-rose-200 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      My love for you grows stronger with every heartbeat. You're my everything, always! 💓
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-violet-100 to-pink-100 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      Your presence turns ordinary moments into magical memories. Thank you for being you! ✨
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-200 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      I dream of our future together, filled with love, laughter, and endless joy. 🥰
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-pink-100 to-red-100 rounded-lg p-4 sm:p-6 shadow-md transform transition hover:scale-105">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700">
+                      You’re my sunshine, my moon, and all my stars. I’m forever yours, my princess! 🌞🌙
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeTab === 'lovejar' && (
+              <div className="fade-in text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-600 mb-6">Love Jar of Compliments 💖</h2>
+                <p className="text-lg sm:text-xl mb-6 text-gray-800">Tap the jar to reveal a loving note that shows how much I adore you! Keep pulling for more! 🌸</p>
+                <button
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition duration-300 text-base sm:text-lg font-semibold shadow-lg mb-8 spin-jar"
+                  onClick={revealLoveNote}
+                >
+                  Pull a Note from the Jar! 🏺
+                </button>
+                <div className="space-y-4">
+                  {loveNotes.map((note, index) => (
+                    <div key={note.id} className="bg-white rounded-lg p-4 sm:p-6 shadow-md love-note" style={{ animationDelay: `${index * 0.2}s` }}>
+                      <p className="text-base sm:text-lg md:text-xl text-pink-700 font-medium typing">{note.message}</p>
+                    </div>
+                  ))}
+                </div>
+                {loveNotes.length >= 5 && (
+                  <div className="mt-8">
+                    <button
+                      className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:from-red-600 hover:to-pink-600 transition duration-300 text-base sm:text-lg font-semibold shadow-lg"
+                      onClick={triggerGrandFinale}
+                    >
+                      Grand Finale Surprise! 🎉
+                    </button>
+                  </div>
+                )}
+                {currentNote && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 fade-in z-50">
+                    <div className="glass rounded-2xl p-4 sm:p-6 max-w-lg text-center love-note">
+                      <p className="text-lg sm:text-xl md:text-2xl font-bold text-pink-700 typing">
+                        {currentNote}
+                      </p>
+                      <button
+                        className="mt-4 bg-purple-500 text-white px-4 sm:px-6 py-2 rounded-full hover:bg-purple-600 transition duration-300 text-sm sm:text-base"
+                        onClick={() => setCurrentNote(null)}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {showFinale && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 fade-in z-50">
+                    <div className="glass rounded-2xl p-4 sm:p-6 max-w-lg text-center">
+                      <p className="text-lg sm:text-xl md:text-2xl font-bold text-pink-700 typing">
+                        My darling princess, you’re my entire universe! Let’s write our love story forever! 🌌💖
+                      </p>
+                      <button
+                        className="mt-4 bg-purple-500 text-white px-4 sm:px-6 py-2 rounded-full hover:bg-purple-600 transition duration-300 text-sm sm:text-base"
+                        onClick={() => setShowFinale(false)}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {activeTab === 'gifts' && (
+              <div className="fade-in text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-600 mb-6">Virtual Gift Box 🎁</h2>
+                <p className="text-lg sm:text-xl mb-6 text-gray-800">Tap the gifts to unwrap special surprises filled with love! 💕</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                  <button className="bg-gradient-to-r from-yellow-200 to-pink-200 rounded-lg p-4 sm:p-6 shadow-md hover:scale-105 transition" onClick={() => { generateParticles('🎁', 'text-yellow-500'); triggerConfetti(); }}>
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-2">🎁</div>
+                    <p className="text-gray-800 text-sm sm:text-base">Gift 1: A virtual hug that lasts forever! 🤗</p>
+                  </button>
+                  <button className="bg-gradient-to-r from-yellow-200 to-pink-200 rounded-lg p-4 sm:p-6 shadow-md hover:scale-105 transition" onClick={() => { generateParticles('🌹', 'text-red-500'); triggerConfetti(); }}>
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-2">🌹</div>
+                    <p className="text-gray-800 text-sm sm:text-base">Gift 2: Eternal roses symbolizing my love! 💐</p>
+                  </button>
+                  <button className="bg-gradient-to-r from-yellow-200 to-pink-200 rounded-lg p-4 sm:p-6 shadow-md hover:scale-105 transition" onClick={() => { generateParticles('💍', 'text-blue-500'); triggerConfetti(); }}>
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-2">💍</div>
+                    <p className="text-gray-800 text-sm sm:text-base">Gift 3: Promise of forever adventures! 🌍</p>
+                  </button>
+                  <button className="bg-gradient-to-r from-yellow-200 to-pink-200 rounded-lg p-4 sm:p-6 shadow-md hover:scale-105 transition" onClick={() => { generateParticles('🍫', 'text-brown-500'); triggerConfetti(); }}>
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-2">🍫</div>
+                    <p className="text-gray-800 text-sm sm:text-base">Gift 4: Sweet chocolates to match your sweetness! 😋</p>
+                  </button>
+                  <button className="bg-gradient-to-r from-yellow-200 to-pink-200 rounded-lg p-4 sm:p-6 shadow-md hover:scale-105 transition" onClick={() => { generateParticles('🧸', 'text-pink-400'); triggerConfetti(); }}>
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-2">🧸</div>
+                    <p className="text-gray-800 text-sm sm:text-base">Gift 5: A cuddly teddy bear for hugs when I'm not there! 🥰</p>
+                  </button>
+                </div>
+              </div>
+            )}
+            {activeTab === 'music' && (
+              <div className="fade-in text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-600 mb-6">Your Personalized Playlist 🎶</h2>
+                <p className="text-lg sm:text-xl mb-6 text-gray-800">Toggle the music above to play a romantic tune dedicated to you! ❤️</p>
+                <div className="flex justify-center space-x-4 sm:space-x-6">
+                  <div className="text-4xl sm:text-5xl md:text-6xl heart-pulse">🎵</div>
+                  <div className="text-4xl sm:text-5xl md:text-6xl float-animation">❤️</div>
+                  <div className="text-4xl sm:text-5xl md:text-6xl heart-pulse">🎤</div>
+                </div>
+              </div>
+            )}
+          </main>
+          {particles.map(particle => (
+            <div
+              key={particle.id}
+              className={`particle ${particle.color}`}
+              style={{
+                left: particle.x,
+                top: particle.y,
+                fontSize: `${particle.size}px`,
+                '--tx': `${particle.tx}px`,
+                '--ty': `${particle.ty}px`,
+              }}
+            >
+              {particle.symbol}
+            </div>
+          ))}
+          {trail.map(t => (
+            <div
+              key={t.id}
+              className="heart-trail text-pink-500"
+              style={{ left: t.x, top: t.y }}
+            >
+              💖
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    try {
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    } catch (e) {
+      console.error("React rendering failed:", e);
+      document.getElementById('root').style.display = 'none';
+      document.getElementById('fallback').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
