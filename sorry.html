@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Please Forgive Me, My Love! 🥹</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.10/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .bounce-animation {
+      animation: bounce 1s ease-in-out infinite;
+    }
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+      75% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .shake-animation {
+      animation: shake 0.5s ease-in-out infinite;
+    }
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .heart-beat {
+      animation: heartBeat 1s ease-in-out infinite;
+    }
+    @keyframes reveal {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .reveal-animation {
+      animation: reveal 1s ease-in forwards;
+    }
+    @keyframes flyIn {
+      0% { opacity: 0; transform: translateX(-100%); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    .fly-in {
+      animation: flyIn 1s ease-in forwards;
+    }
+    body {
+      background: linear-gradient(135deg, #ffebee, #f8bbd0, #e1bee7);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    .puppy-eyes {
+      font-size: 5rem;
+      text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    }
+    .cute-button {
+      background: linear-gradient(to right, #ff69b4, #ffb6c1);
+      border: 2px solid #ff1493;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .cute-button:hover {
+      transform: scale(1.1);
+    }
+    .heart-follow {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      font-size: 3rem;
+      transition: transform 0.1s ease;
+    }
+    .love-meter {
+      width: 100%;
+      height: 20px;
+      background: #ffd1dc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .love-fill {
+      height: 100%;
+      background: linear-gradient(to right, #ff69b4, #ff1493);
+      transition: width 0.5s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center text-center p-4">
+  <div id="root"></div>
+  <script type="text/babel">
+    function App() {
+      const [step, setStep] = React.useState(0);
+      const [forgiven, setForgiven] = React.useState(false);
+      const [playMusic, setPlayMusic] = React.useState(false);
+      const [loveMeter, setLoveMeter] = React.useState(0);
+      const [heartPosition, setHeartPosition] = React.useState({ x: 0, y: 0 });
+      const audioRef = React.useRef(null);
+
+      React.useEffect(() => {
+        if (playMusic) {
+          if (!audioRef.current) {
+            audioRef.current = new Audio('cute-music.mp3'); // Replace with your cute music file
+            audioRef.current.loop = true;
+          }
+          audioRef.current.play().catch(e => console.log("Music playback failed:", e));
+        } else if (audioRef.current) {
+          audioRef.current.pause();
+        }
+      }, [playMusic]);
+
+      React.useEffect(() => {
+        const handleMouseMove = (e) => {
+          setHeartPosition({ x: e.clientX + 20, y: e.clientY + 20 });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+      }, []);
+
+      const triggerConfetti = () => {
+        confetti({
+          particleCount: 300,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#ff69b4', '#ffb6c1', '#ff1493', '#db7093'],
+        });
+      };
+
+      const generateParticles = () => {
+        const particlesContainer = document.createElement('div');
+        particlesContainer.style.position = 'fixed';
+        particlesContainer.style.top = '0';
+        particlesContainer.style.left = '0';
+        particlesContainer.style.width = '100vw';
+        particlesContainer.style.height = '100vh';
+        particlesContainer.style.pointerEvents = 'none';
+        particlesContainer.style.zIndex = '9999';
+        document.body.appendChild(particlesContainer);
+
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement('div');
+          particle.textContent = '💖';
+          particle.style.position = 'absolute';
+          particle.style.fontSize = `${Math.random() * 20 + 20}px`;
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          particle.style.opacity = '0';
+          particle.style.animation = 'particleBurst 2s ease-out forwards';
+          particlesContainer.appendChild(particle);
+        }
+
+        setTimeout(() => document.body.removeChild(particlesContainer), 2000);
+      };
+
+      const handleChoice = (choice) => {
+        setLoveMeter(prev => Math.min(prev + (choice === 'yes' ? 20 : 10), 100));
+        setStep(prev => prev + 1);
+      };
+
+      const handleForgive = () => {
+        setForgiven(true);
+        triggerConfetti();
+        generateParticles();
+      };
+
+      const steps = [
+        {
+          content: (
+            <div>
+              <h1 className="text-4xl font-bold text-pink-600 mb-4">Oh no, my sweet princess! 🥹</h1>
+              <p className="text-xl mb-6">I'm so sorry for making you upset. Your smile is my everything, and I hate seeing you sad. Please let me make it up to you!</p>
+              <div className="puppy-eyes shake-animation mb-6">🥹</div>
+              <button className="cute-button" onClick={() => setStep(1)}>Hear me out, please! 🙏</button>
+            </div>
+          )
+        },
+        {
+          content: (
+            <div>
+              <h1 className="text-4xl font-bold text-pink-600 mb-4">My heartfelt apology 💌</h1>
+              <p className="text-xl mb-6 reveal-animation">My love, I know I messed up, but you're the Rasmalai of my life – sweet, irresistible, and I can't live without you! Forgive this silly boy? 🥹</p>
+              <div className="heart-beat text-6xl mb-6">❤️</div>
+              <button className="cute-button" onClick={() => setStep(2)}>See cute memories! 📸</button>
+            </div>
+          )
+        },
+        {
+          content: (
+            <div>
+              <h1 className="text-4xl font-bold text-pink-600 mb-4">Fun Love Quiz Time! ❓</h1>
+              <p className="text-xl mb-4 fly-in">Question 1: Do you remember our first kiss? Was it magical? ✨</p>
+              <div className="flex justify-center space-x-4 mb-6">
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('yes')}>Yes, it was! 😘</button>
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('no')}>Remind me! 💕</button>
+              </div>
+              <div className="love-meter">
+                <div className="love-fill" style={{width: `${loveMeter}%`}}></div>
+              </div>
+              <p className="text-xl mb-6 fly-in" style={{animationDelay: '0.5s'}}>Question 2: Am I the cutest boyfriend ever? 🥹</p>
+              <div className="flex justify-center space-x-4">
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('yes')}>Absolutely! 🥰</button>
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('no')}>Maybe... 😏</button>
+              </div>
+            </div>
+          )
+        },
+        {
+          content: (
+            <div>
+              <h1 className="text-4xl font-bold text-pink-600 mb-4">Our cute moments 🥰</h1>
+              <p className="text-xl mb-6 reveal-animation">Remember our first date when I tripped trying to impress you? Or how we danced in the rain? Those moments are magic because of you!</p>
+              <div className="bounce-animation text-6xl mb-6">💃🕺</div>
+              <button className="cute-button" onClick={() => setStep(4)}>My promises to you ✨</button>
+            </div>
+          )
+        },
+        {
+          content: (
+            <div>
+              <h1 className="text-4xl font-bold text-pink-600 mb-4">Promises from my heart 💕</h1>
+              <ul className="text-xl mb-6 space-y-2">
+                <li className="reveal-animation">I'll always be by your side, no matter what! 🤝</li>
+                <li className="reveal-animation" style={{animationDelay: '0.5s'}}>More surprises and cuddles every day! 🧸</li>
+                <li className="reveal-animation" style={{animationDelay: '1s'}}>Your happiness is my top priority! 🌟</li>
+              </ul>
+              <button className="cute-button" onClick={handleForgive}>Forgive me? Pretty please with a cherry on top! 🥹🍒</button>
+            </div>
+          )
+        }
+      ];
+
+      if (forgiven) {
+        return (
+          <div className="fade-in">
+            <h1 className="text-5xl font-bold text-pink-600 mb-4">Yay! You forgave me! 🎉</h1>
+            <p className="text-2xl mb-6">I love you so much, my princess! Let's make more amazing memories together. You're the best! 💖</p>
+            <div className="text-8xl heart-beat">😍</div>
+            <label className="flex justify-center items-center space-x-2 mt-6">
+              <input
+                type="checkbox"
+                checked={playMusic}
+                onChange={() => setPlayMusic(!playMusic)}
+                className="form-checkbox h-5 w-5 text-pink-500"
+              />
+              <span className="text-pink-600">Play celebration music! 🎶</span>
+            </label>
+          </div>
+        );
+      }
+
+      return (
+        <div className="max-w-2xl mx-auto relative">
+          {steps[step].content}
+          <div className="heart-follow" style={{left: heartPosition.x, top: heartPosition.y}}>💖</div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
