@@ -144,7 +144,7 @@
         particlesContainer.style.zIndex = '9999';
         document.body.appendChild(particlesContainer);
 
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 100; i++) {
           const particle = document.createElement('div');
           particle.textContent = '💖';
           particle.style.position = 'absolute';
@@ -185,28 +185,28 @@
           content: (
             <div>
               <h1 className="text-4xl font-bold text-pink-600 mb-4">My heartfelt apology 💌</h1>
-              <p className="text-xl mb-6 reveal-animation">My love, I know I messed up, but you're the Rasmalai of my life – sweet, irresistible, and I can't live without you! Forgive this silly boy? 🥹</p>
+              <p className="text-xl mb-6 reveal-animation">Meri Jaan Meri Princess, I know I messed up, but you're the Rasmalai of my life – sweet, irresistible, and I can't live without you! Forgive this silly boy? 🥹</p>
               <div className="heart-beat text-6xl mb-6">❤️</div>
-              <button className="cute-button" onClick={() => setStep(2)}>See cute memories! 📸</button>
+              <button className="cute-button" onClick={() => setStep(2)}>Wanna See something cute? 📸</button>
             </div>
           )
         },
         {
           content: (
             <div>
-              <h1 className="text-4xl font-bold text-pink-600 mb-4">Fun Love Quiz Time! ❓</h1>
-              <p className="text-xl mb-4 fly-in">Question 1: Do you remember our first kiss? Was it magical? ✨</p>
+              <h1 className="text-4xl font-bold text-pink-600 mb-4">Some Lovely Moments 💖</h1>
+              <p className="text-xl mb-4 fly-in">Question 1: Do you remember when you slept on my shoulder? ✨</p>
               <div className="flex justify-center space-x-4 mb-6">
-                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('yes')}>Yes, it was! 😘</button>
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('yes')}>Yes 😘</button>
                 <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('no')}>Remind me! 💕</button>
               </div>
               <div className="love-meter">
                 <div className="love-fill" style={{width: `${loveMeter}%`}}></div>
               </div>
-              <p className="text-xl mb-6 fly-in" style={{animationDelay: '0.5s'}}>Question 2: Am I the cutest boyfriend ever? 🥹</p>
+              <p className="text-xl mb-6 fly-in" style={{animationDelay: '0.5s'}}>Question 2: Am I the really that bad 🥺? 🥹</p>
               <div className="flex justify-center space-x-4">
-                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('yes')}>Absolutely! 🥰</button>
-                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('no')}>Maybe... 😏</button>
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('yes')}>N0! 🥰</button>
+                <button className="cute-button text-sm py-2 px-4" onClick={() => handleChoice('no')}>Yes</button>
               </div>
             </div>
           )
@@ -215,7 +215,7 @@
           content: (
             <div>
               <h1 className="text-4xl font-bold text-pink-600 mb-4">Our cute moments 🥰</h1>
-              <p className="text-xl mb-6 reveal-animation">Remember our first date when I tripped trying to impress you? Or how we danced in the rain? Those moments are magic because of you!</p>
+              <p className="text-xl mb-6 reveal-animation">Remember when we sat on the rooftop in Kashmir and saw the stars together🌌? Or when we went on a bike ride and forgot our way 🚴‍♂️? Or when you fed me that cake by your hands🍰? Or when we match our outfit and click pictures together? 📸</p>
               <div className="bounce-animation text-6xl mb-6">💃🕺</div>
               <button className="cute-button" onClick={() => setStep(4)}>My promises to you ✨</button>
             </div>
@@ -229,6 +229,7 @@
                 <li className="reveal-animation">I'll always be by your side, no matter what! 🤝</li>
                 <li className="reveal-animation" style={{animationDelay: '0.5s'}}>More surprises and cuddles every day! 🧸</li>
                 <li className="reveal-animation" style={{animationDelay: '1s'}}>Your happiness is my top priority! 🌟</li>
+                <li className="reveal-animation" style={{animationDelay: '1s'}}>Mai Hamesha aapko manao ga meri jaan 💖</li>
               </ul>
               <button className="cute-button" onClick={handleForgive}>Forgive me? Pretty please with a cherry on top! 🥹🍒</button>
             </div>
